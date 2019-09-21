@@ -85,6 +85,8 @@
     </div>
     <script type="text/javascript">
       $(function() {
+        console.log(ol);
+
         $.get("/report", function(data, status) {
           var map = new ol.Map({
             target: "map",
@@ -98,15 +100,14 @@
               zoom: 11
             })
           });
-          var markers = new OpenLayers.Layer.Markers("Markers");
+          var markers = new ol.Layer.Markers("Markers");
           map.addLayer(markers);
 
-          var size = new OpenLayers.Size(21, 25);
-          var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-          var icon = new OpenLayers.Icon(
+          var size = new ol.size(21, 25);
+          var offset = new ol.style.pixel(-(size.w / 2), -size.h);
+          var icon = new ol.style.Icon(
             "http://www.openlayers.org/dev/img/marker.png",
-            size,
-            offset
+            size
           );
 
           data.reports.forEach(rep => {
@@ -114,10 +115,7 @@
               .split(", ")
               .map(num => parseFloat(num.substring(0, 8)));
             marks.addMarker(
-              new OpenLayers.Markers(
-                new ol.LonLat(latLong[0], latLong[1]),
-                icon
-              )
+              new ol.Markers(new ol.LonLat(latLong[0], latLong[1]), icon)
             );
           });
           console.log(data);
