@@ -1,37 +1,41 @@
 // const request = require('request-promise');
-const { Client } = require('pg');
+const { MongoClient } = require('mongodb');
+const express = require('express');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
+const MONGODB_URI = process.env.MONGODB_URI;
+const DB_NAME = process.env.DB_NAME;
+const COLLECTION_NAME = 'truck-reporting';
 // const make311Request = payload => request('someurl.com', payload);
 
-exports.handler = async (event) => {
+const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/report', async (req, res) => {
   try {
     const {
-      userAddress,
-      lat,
-      lon,
-      description,
+      company,
+      date,
       licensePlate,
-    } = event;
-    const datetime = new Date().toISOString();
-  
-    const client = new Client();
-    await client.connect();
-    await client.query(`
-  INSERT INTO truck_data (user_address, lat, lon, description, license_plate, created_at)
-    VALUES (${userAddress}, ${lat}, ${lon}, ${description}, ${licensePlate}, ${datetime});
-    `);
-  
-    // await make311Request();
-  
-    return {
-      statusCode: 200,
-      body: 'OK',
-    };
+      location
+    } = req.body;
+
+    const client = await MongoClient.connect(MONGODB_URI);
+    const Trucks = client.db(DB_NAME).collection(COLLECTION_NAME);
+    await Trucks.insertOne({
+      company,
+      date,
+      licensePlate,
+      location
+    });
+
+    res.sendStatus(200);
   } catch (err) {
     console.error(err);
-    return {
-      statusCode: 500,
-      body: 'Server error'
-    };
+    res.sendStatus(500);
   }
-};
+});
+
+app.listen(process.env.PORT || 3000, () => console.log('server running'));
