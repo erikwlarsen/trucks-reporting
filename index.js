@@ -43,4 +43,11 @@ app.post('/report', async (req, res) => {
   }
 });
 
+app.get('/report', async (req, res) => {
+  const client = await MongoClient.connect(MONGODB_URI);
+  const Trucks = client.db(DB_NAME).collection(COLLECTION_NAME);
+  const reports = await Trucks.find().toArray();
+  res.json({ reports });
+});
+
 app.listen(process.env.PORT || 3000, () => console.log('server running'));
