@@ -98,12 +98,12 @@
               zoom: 11
             })
           });
-          var markers = new ol.Layer.Markers("Markers");
+          var markers = new OpenLayers.Layer.Markers("Markers");
           map.addLayer(markers);
 
-          var size = new ol.Size(21, 25);
-          var offset = new ol.Pixel(-(size.w / 2), -size.h);
-          var icon = new ol.Icon(
+          var size = new OpenLayers.Size(21, 25);
+          var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+          var icon = new OpenLayers.Icon(
             "http://www.openlayers.org/dev/img/marker.png",
             size,
             offset
@@ -114,7 +114,10 @@
               .split(", ")
               .map(num => parseFloat(num.substring(0, 8)));
             marks.addMarker(
-              new ol.Markers(new ol.LonLat(latLong[0], latLong[1]), icon)
+              new OpenLayers.Markers(
+                new ol.LonLat(latLong[0], latLong[1]),
+                icon
+              )
             );
           });
           console.log(data);
