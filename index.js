@@ -2,6 +2,7 @@
 const { MongoClient } = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -12,6 +13,10 @@ const COLLECTION_NAME = 'truck-reporting';
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/', (_req, res) => {
+  res.sendFile(path.resolve(__dirname, 'index.html'));
+});
 
 app.post('/report', async (req, res) => {
   try {
